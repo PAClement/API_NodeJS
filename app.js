@@ -1,7 +1,10 @@
 import express from 'express';
-import { graphqlHTTP } from 'express-graphql';
+import {graphqlHTTP} from 'express-graphql';
 import mariadb from 'mariadb'
 import schema from './GRAPHschema.js'
+
+//Importation des models
+import Style from './models/style.js';
 
 const app = express();
 const port = 8080;
@@ -9,16 +12,16 @@ const port = 8080;
 const pool = mariadb.createPool({
     host: 'localhost',
     port: 4000,
-    user:'root',
+    user: 'root',
     password: 'rootpwd',
     database: 'liveAddict',
     connectionLimit: 5
 });
 
-async function selectAll(name){
+const buildQuery = async (query) => {
     return await pool.getConnection()
         .then(conn => {
-            return conn.query(`SELECT * FROM ${name}`)
+            return conn.query(query)
                 .then((rows) => {
                     conn.end();
                     return rows
@@ -29,22 +32,66 @@ async function selectAll(name){
                     conn.end();
                 })
         }).catch(err => {
-        //not connected
-        console.log(err);
-    });
+            //not connected
+            console.log(err);
+        });
 }
+
+//===========================================================
+
+//Le paramètre state permet de changer le mode de requête
+// State = basic : C'est des requête sans ORM
+// State = advanced : C'est les requêtes avec ORM (Sequelize)
+
+//===========================================================
 
 // The root provides a resolver function for each API endpoint
 const resolver = {
-    getAllStyle(){
-        return selectAll("Style")
+    getAllStyle(args) {
+        // l'ensemble des styles
+        if (args.state === "basic") {
+            return buildQuery("SELECT * FROM Style")
+        } else if (args.state === "advanced") {
+            return Style.findAll()
+                .then(styles => {
+                    console.log('Utilisateurs trouvés :', styles);
+                })
+                .catch(error => {
+                    console.error('Erreur lors de la récupération des utilisateurs :', error);
+                });
+        }
     },
-    getAllArtiste(){
-        return selectAll("Artiste")
+    getAllArtiste(args) {
+        // l'ensemble des artistes
+        if (args.state === "basic") {
+            return buildQuery("SELECT * FROM Artiste")
+        } else if (args.state === "advanced") {
+            return true
+        }
+    },
+    getConcertByTown(args) {
+        // l'ensemble des concerts d'une ville
+
+    },
+    getVisitorByTown(args) {
+        // L'ensemble des visiteurs d'une ville
+
+    },
+    getConcertByArtiste(args) {
+        // l'ensemble des concerts d'un artiste
+
+    },
+    getConcertByStyleByTown(args) {
+        // l'ensemble des concerts d'un style pour une ville
+
+    },
+    getProportionOfStyle(args) {
+        // La proportion des styles écoutés par ville
+
     }
 }
 
-app.use("/graphql",  graphqlHTTP({
+app.use("/graphql", graphqlHTTP({
     schema: schema,
     rootValue: resolver,
     graphiql: true,
