@@ -5,6 +5,7 @@ import schema from './GRAPHschema.js'
 
 //Importation des models
 import Style from './models/style.js';
+import Artiste from './models/artiste.js';
 
 const app = express();
 const port = 8080;
@@ -50,14 +51,15 @@ const resolver = {
     getAllStyle(args) {
         // l'ensemble des styles
         if (args.state === "basic") {
+
             return buildQuery("SELECT * FROM Style")
         } else if (args.state === "advanced") {
-            return Style.findAll()
-                .then(styles => {
-                    console.log('Utilisateurs trouvés :', styles);
+
+            return Style.findAll().then(styles => {
+                    return styles.map(target =>  target.dataValues)
                 })
                 .catch(error => {
-                    console.error('Erreur lors de la récupération des utilisateurs :', error);
+                    console.error(error);
                 });
         }
     },
@@ -66,7 +68,12 @@ const resolver = {
         if (args.state === "basic") {
             return buildQuery("SELECT * FROM Artiste")
         } else if (args.state === "advanced") {
-            return true
+            return Artiste.findAll().then(artistes => {
+                return artistes.map(target =>  target.dataValues)
+            })
+                .catch(error => {
+                    console.error(error);
+                });
         }
     },
     getConcertByTown(args) {

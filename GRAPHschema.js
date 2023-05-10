@@ -16,7 +16,7 @@ const schema = buildSchema(`
   
   type Query {
     getAllStyle(state: String): [Style]!
-    getAllArtiste: [Artiste]!
+    getAllArtiste(state: String): [Artiste]!
   }
 `)
 
