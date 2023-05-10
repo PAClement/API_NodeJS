@@ -66,9 +66,9 @@ const resolver = {
     getAllArtiste(args) {
         // l'ensemble des artistes
         if (args.state === "basic") {
-            return buildQuery("SELECT * FROM Artiste")
+            return buildQuery("SELECT IdArtiste, pseudo, Artiste.idStyle, libelle, description FROM Artiste INNER JOIN Style on Style.idStyle = Artiste.idStyle")
         } else if (args.state === "advanced") {
-            return Artiste.findAll().then(artistes => {
+            return Artiste.findAll({ include: [Style] }).then(artistes => {
                 return artistes.map(target =>  target.dataValues)
             })
                 .catch(error => {

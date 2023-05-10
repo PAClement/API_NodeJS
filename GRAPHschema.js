@@ -3,7 +3,7 @@ import {buildSchema} from "graphql";
 const schema = buildSchema(`
 
   type Style{
-    idStyle: Int!
+    idStyle: Int
     libelle: String
     description: String
   }
@@ -11,7 +11,7 @@ const schema = buildSchema(`
   type Artiste{
     IdArtiste: Int!
     pseudo: String
-    idStyle: Int
+    idStyle: [Style]
   }
   
   type Query {
