@@ -1,5 +1,6 @@
 import {DataTypes} from "sequelize";
 import sequelize from "../sequelize.js";
+import Artiste from "./artiste.js";
 
 const Style = sequelize.define('Style', {
     // Model attributes are defined here
@@ -18,5 +19,7 @@ const Style = sequelize.define('Style', {
     timestamps: false,
     tableName: 'Style'
 });
+
+Style.hasMany(Artiste, { foreignKey: 'idStyle' });
 
 export default Style;

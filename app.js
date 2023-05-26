@@ -167,19 +167,23 @@ const resolver = {
                 }
                 returnData.push(buffer)
             })
+            return returnData;
+        } else if (args.state === "advanced") {
+            const artistes = await Artiste.findAll({
+                include: [Style],
+            });
 
-            console.log(returnData)
+            const returnData = artistes.map((artiste) => ({
+                IdArtiste: artiste.IdArtiste,
+                pseudo: artiste.pseudo,
+                styles: artiste.Styles ? artiste.Styles.map((style) => ({
+                    idStyle: style.idStyle,
+                    libelle: style.libelle,
+                    description: style.description,
+                })) : [], // Utiliser un tableau vide si artiste.Styles est undefined
+            }));
 
             return returnData;
-
-
-        } else if (args.state === "advanced") {
-            return Artiste.findAll({include: [Style]}).then(artistes => {
-                return artistes.map(target => target.dataValues)
-            })
-                .catch(error => {
-                    console.error(error);
-                });
         }
     },
     getConcertByTown(args) {
