@@ -11,7 +11,7 @@ const schema = buildSchema(`
   type Artiste{
     IdArtiste: Int!
     pseudo: String
-    idStyle: [Style]
+    styles: Style
   }
   
   type Query {

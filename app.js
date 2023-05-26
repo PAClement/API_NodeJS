@@ -148,10 +148,30 @@ const resolver = {
                 });
         }
     },
-    getAllArtiste(args) {
+    async getAllArtiste(args) {
         // l'ensemble des artistes
         if (args.state === "basic") {
-            return buildQuery("SELECT IdArtiste, Artiste.idStyle, libelle, description FROM Artiste INNER JOIN Style on Style.idStyle = Artiste.idStyle")
+            let artisteData = await buildQuery("SELECT IdArtiste, Artiste.pseudo, Style.idStyle , libelle, description FROM Artiste INNER JOIN Style on Style.idStyle = Artiste.idStyle")
+
+            let returnData = [];
+
+            artisteData.map(target =>{
+                let buffer = {
+                    IdArtiste: target.IdArtiste,
+                    pseudo: target.pseudo,
+                    styles:{
+                        idStyle: target.idStyle,
+                        libelle: target.libelle,
+                        description: target.description
+                    }
+                }
+                returnData.push(buffer)
+            })
+
+            console.log(returnData)
+
+            return returnData;
+
 
         } else if (args.state === "advanced") {
             return Artiste.findAll({include: [Style]}).then(artistes => {
