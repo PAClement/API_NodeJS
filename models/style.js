@@ -20,6 +20,5 @@ const Style = sequelize.define('Style', {
     tableName: 'Style'
 });
 
-Style.hasMany(Artiste, { foreignKey: 'idStyle' });
 
 export default Style;
