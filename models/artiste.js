@@ -10,13 +10,15 @@ const Artiste = sequelize.define('Artiste', {
     },
     pseudo: {
         type: DataTypes.STRING,
-    }
+    },
+    idStyle: {
+        type: DataTypes.INTEGER,
+        foreignKey: true
+    },
 },{
     freezeTableName: true,
     timestamps: false,
     tableName: 'Artiste'
 });
-
-Artiste.belongsTo(Style, { foreignKey: 'idStyle' });
 
 export default Artiste;
